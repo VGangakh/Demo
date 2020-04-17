@@ -1,0 +1,56 @@
+--- 
+2 - name: Test playbook 
+3   hosts: all 
+4   become: yes 
+5   become_method: sudo 
+6   become_user: root 
+7 
+ 
+8   tasks: 
+9 
+ 
+10   - name: installing the httpd packages on {{ ansible_hostname }} 
+11     yum: 
+12       name: httpd 
+13       state: present 
+14 
+ 
+15   - name: Start service httpd, if not started 
+16     service: 
+17       name: httpd 
+18       state: started 
+19       enabled: yes 
+20 
+ 
+21   - name: copy data 
+22     copy: 
+23       content: Apache page from host {{ ansible_hostname }} and kernel ver {{ ansible_kernel }} and Memory sise is {{ ansible_memory_mb.real.total }} 
+24       dest: /var/www/html/index.html 
+25 
+ 
+26   - name: raw command run 
+27     shell: hostname; whoami 
+28     register: shelloutput 
+29 
+ 
+30   - name: checking the output 
+31     debug: 
+32       var: shelloutput.stdout_lines 
+33 
+ 
+34 
+ 
+35   - name: Start service Docker, if not started 
+36     service: 
+37       name: docker 
+38       state: started 
+39       enabled: yes 
+40 
+ 
+41   - name: Build Docker file 
+42     shell: docker build -t img:v1 . 
+43 
+ 
+44   - name: DockerRun 
+45     shell: docker run -itd --rm --name=web1 -p 443:80 img:v1 
+46 ... 
