@@ -45,7 +45,7 @@
       mode: '0755'
   - name: clone the data from git hub
     git:
-      repo: https://github.com/bschethan99/lab.git
+      repo: https://github.com/VGangakh/Demo.git
       dest: /clone/
       version: master
       force: yes
