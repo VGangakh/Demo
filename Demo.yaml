@@ -47,10 +47,23 @@
 39       enabled: yes 
 40 
  
-41   - name: Build Docker file 
-42     shell: docker build -t img:v1 . 
-43 
+41   - name: Create a directory if it does not exist 
+42     file: 
+43       path: /clone/ 
+44       state: directory 
+45       mode: '0755' 
+46   - name: clone the data from git hub 
+47     git: 
+48       repo: https://github.com/bschethan99/lab.git 
+49       dest: /clone/ 
+50       version: master 
+51       force: yes 
+52 
  
-44   - name: DockerRun 
-45     shell: docker run -itd --rm --name=web1 -p 443:80 img:v1 
-46 ... 
+53   - name: Build Docker file 
+54     shell: docker build -t img:v1 /clone/ 
+55 
+ 
+56   - name: DockerRun 
+57     shell: docker run -itd --rm --name=web1 -p 443:80 img:v1 
+58 ... 
